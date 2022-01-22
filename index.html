@@ -71,13 +71,16 @@
         emitter = particles.createEmitter({
             speed: 200,
             scale: { start: 1, end: 0 },
-            blendMode: 'ADD',
+            blendMode: 'DARKEN',
         });
 
-        emitter.setPosition( 600, 100 );
-		emitter.setQuantity( 3 );
-		emitter.setLifespan( 3000 );
-		emitter.setGravity( 0, 500 );
+        emitter.setPosition( 600, 150 );
+		emitter.setQuantity( 1 );
+		emitter.setLifespan( 1000 );
+		emitter.setGravity( 0, 1000 );
+        // emitter.setYSpeed(300, 500);
+        // emitter.setXSpeed(-5, 5);
+
 
         // UI
         text = this.add.text(16, 16, weather, { fontSize: '32px', fill: '#000' });
