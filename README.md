@@ -8,7 +8,7 @@ To play game:
 4. Open broser and go to `http://localhost:8000/`
 
 Controls
-- Right Arrow = Sunny
-- Left Arrow = Rainy
+- Left Arrow = Change weather to Sunny
+- Right Arrow = Change weather to Rainy
 
 ![Screenshot](https://github.com/josephclaymiller/Sun-Rain/blob/main/sun_rain_screenshot3.png)
