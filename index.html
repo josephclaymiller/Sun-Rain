@@ -39,6 +39,11 @@
     var text;
     var cursors;
     var sun;
+    var waterLevel=0;
+    var flower;
+
+    var graphics;
+    var rect;
 
     function preload ()
     {
@@ -49,6 +54,8 @@
         this.load.image('droplet', 'assets/droplet.png');
         this.load.image('cloud', 'assets/cloud.png');
         this.load.image('sun', 'assets/sun.png');
+
+        //this.load.spritesheet('button', 'assets/button_sprite_sheet.png', 193, 71);
     }
 
     function create ()
@@ -63,7 +70,7 @@
 		this.add.image(400, 568, 'ground').setScale(2);
 
         // flower
-        this.add.image(400, 400, 'flower');
+        flower = this.add.image(400, 400, 'flower');
 
 		// rain
 		this.add.image(600, 100, 'cloud');
@@ -82,6 +89,12 @@
         // emitter.setYSpeed(300, 500);
         // emitter.setXSpeed(-5, 5);
 
+        // flood
+        graphics = this.add.graphics({ lineStyle: { width: 2, color: 0xaa0000 }, fillStyle: { color: 0x0000aa } });
+        rect = new Phaser.Geom.Rectangle(0,550,800,10);
+        
+        graphics.clear();
+        graphics.fillRectShape(rect);
 
         // UI
         text = this.add.text(16, 16, weather, { fontSize: '32px', fill: '#000' });
@@ -94,10 +107,18 @@
     {
 		if (weather == "Rainy") {
 			emitter.start()
+            if ( waterLevel < 300 ) {
+                waterLevel += 1
+            }
 		} else {
+            //handle sunny
             sun.rotation += 0.005;
 			emitter.stop()
-		}
+
+            if ( waterLevel > 0 ) {
+                waterLevel -= 1
+            }
+        }
 
         if (cursors.left.isDown && weather != "Sunny")
 		{
@@ -111,6 +132,13 @@
 			text.setText(weather);
 			text.setPosition(600, 32, 1);
 		}
+
+        
+        rect.height = 10 + waterLevel
+        rect.y = 550 - rect.height
+        graphics.clear();
+        graphics.fillRectShape(rect);
+
 	}
 </script>
 
