@@ -38,6 +38,7 @@
     var ground;
     var text;
     var cursors;
+    var sun;
 
     function preload ()
     {
@@ -56,7 +57,7 @@
         this.add.image(400, 300, 'background');
 
 		// sun
-        this.add.image(000, 000, 'sun');
+        sun = this.add.image(000, 000, 'sun');
 
         // ground
 		this.add.image(400, 568, 'ground').setScale(2);
@@ -94,6 +95,7 @@
 		if (weather == "Rainy") {
 			emitter.start()
 		} else {
+            sun.rotation += 0.005;
 			emitter.stop()
 		}
 
