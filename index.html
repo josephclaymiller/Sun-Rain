@@ -33,14 +33,21 @@
 
     var game = new Phaser.Game(config);
 
-    var weather='Sunny';
-    var emitter;
+    var weather = 'Sunny';
+    var rainEmitter;
     var ground;
     var text;
     var cursors;
     var sun;
-    var waterLevel=0;
+    var waterColor = 0x0084bf;
+    var waterLevel = 0;
+    var waterFillRate = 0.1;
+    var waterStartLevel = 40;
+    var minWaterLevel = 10;
+    var maxWaterLevel = 100;
     var flower;
+    var flowerHealth;
+    var maxFlowerHealth = 100;
 
     var graphics;
     var rect;
@@ -70,34 +77,42 @@
 		this.add.image(400, 568, 'ground').setScale(2);
 
         // flower
+        flowerHealth = maxFlowerHealth;
         flower = this.add.image(400, 400, 'flower');
 
 		// rain
 		this.add.image(600, 100, 'cloud');
         var particles = this.add.particles('droplet');
 
-        emitter = particles.createEmitter({
+        rainEmitter = particles.createEmitter({
             speed: 200,
             scale: { start: 1, end: 0 },
             blendMode: 'DARKEN',
         });
 
-        emitter.setPosition( 600, 150 );
-		emitter.setQuantity( 1 );
-		emitter.setLifespan( 1000 );
-		emitter.setGravity( 0, 1000 );
-        // emitter.setYSpeed(300, 500);
-        // emitter.setXSpeed(-5, 5);
+        rainEmitter.setPosition( 600, 150 );
+		rainEmitter.setQuantity( 1 );
+		rainEmitter.setLifespan( 1000 );
+		rainEmitter.setGravity( 0, 1000 );
+        // rainEmitter.setYSpeed(300, 500);
+        // rainEmitter.setXSpeed(-5, 5);
 
-        // flood
-        graphics = this.add.graphics({ lineStyle: { width: 2, color: 0xaa0000 }, fillStyle: { color: 0x0000aa } });
+        // Ground Water
+        waterLevel = waterStartLevel;
+        graphics = this.add.graphics({ 
+            lineStyle: { width: 2, color: waterColor }, 
+            fillStyle: { color: waterColor } 
+        });
         rect = new Phaser.Geom.Rectangle(0,550,800,10);
         
         graphics.clear();
         graphics.fillRectShape(rect);
 
         // UI
-        text = this.add.text(16, 16, weather, { fontSize: '32px', fill: '#000' });
+        text = this.add.text(16, 16, weather, { 
+            fontSize: '32px', 
+            fill: '#000' 
+        });
 
 		// Keyboard input
         cursors = this.input.keyboard.createCursorKeys();
@@ -105,41 +120,75 @@
 
     function update ()
     {
-		if (weather == "Rainy") {
-			emitter.start()
+        // Rainy
+		if (weather == "Rainy") 
+        {
+			rainEmitter.start()
             if ( waterLevel < 200 ) {
-                waterLevel += 1
+                waterLevel += waterFillRate
+                if (waterLevel > maxWaterLevel) 
+                {
+                    // plant is dying
+                    console.log(`plant is drowning ${flowerHealth}/${maxFlowerHealth}`);
+                    flowerHealth -= 1
+                }
             }
-		} else {
-            //handle sunny
+		} else 
+        {
+            // Sunny
+            rainEmitter.stop()
             sun.rotation += 0.005;
-			emitter.stop()
 
-            if ( waterLevel > 0 ) {
-                waterLevel -= 1
+            if (waterLevel > 0) 
+            {
+                waterLevel -= waterFillRate
+                if (waterLevel < minWaterLevel) 
+                {
+                    // plant is dying
+                    console.log(`plant is thirsty ${flowerHealth}/${maxFlowerHealth}`);
+                    flowerHealth -= 1
+                } else if (flowerHealth < maxFlowerHealth) {
+                    // plant gains health in sun if not thirsty
+                    flowerHealth += 1
+                }
             }
+        }
+
+        // Check if flower is still alive
+        if (flowerHealth <= 0) {
+            // plant is dead
+            window.alert("Flower has died");
+            restartGame();
         }
 
         if (cursors.left.isDown && weather != "Sunny")
 		{
-			weather="Sunny"
+			weather = "Sunny"
 			text.setText(weather);
 			text.setPosition(16, 16, 1);
 		}
         else if (cursors.right.isDown && weather != "Rainy")
 		{
-			weather="Rainy"
+			weather = "Rainy"
 			text.setText(weather);
 			text.setPosition(600, 32, 1);
 		}
 
         
-        rect.height = 10 + waterLevel
+        rect.height = waterLevel
         rect.y = 600 - rect.height
         graphics.clear();
         graphics.fillRectShape(rect);
 
 	}
+
+    function restartGame () 
+    {
+        // TODO: Figure out how to restart game
+        waterLevel = waterStartLevel;
+        this.scene.restart(); // restart current scene
+    }
+
 </script>
 
 </body>
