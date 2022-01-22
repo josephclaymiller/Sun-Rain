@@ -107,7 +107,7 @@
     {
 		if (weather == "Rainy") {
 			emitter.start()
-            if ( waterLevel < 300 ) {
+            if ( waterLevel < 200 ) {
                 waterLevel += 1
             }
 		} else {
@@ -135,7 +135,7 @@
 
         
         rect.height = 10 + waterLevel
-        rect.y = 550 - rect.height
+        rect.y = 600 - rect.height
         graphics.clear();
         graphics.fillRectShape(rect);
 
