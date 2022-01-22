@@ -70,18 +70,18 @@
         // background
         this.add.image(400, 300, 'background');
 
-		// sun
+        // sun
         sun = this.add.image(000, 000, 'sun');
 
         // ground
-		this.add.image(400, 568, 'ground').setScale(2);
+        this.add.image(400, 568, 'ground').setScale(2);
 
         // flower
         flowerHealth = maxFlowerHealth;
         flower = this.add.image(400, 400, 'flower');
 
-		// rain
-		this.add.image(600, 100, 'cloud');
+        // rain
+        this.add.image(600, 100, 'cloud');
         var particles = this.add.particles('droplet');
 
         rainEmitter = particles.createEmitter({
@@ -91,9 +91,9 @@
         });
 
         rainEmitter.setPosition( 600, 150 );
-		rainEmitter.setQuantity( 1 );
-		rainEmitter.setLifespan( 1000 );
-		rainEmitter.setGravity( 0, 1000 );
+        rainEmitter.setQuantity( 1 );
+        rainEmitter.setLifespan( 1000 );
+        rainEmitter.setGravity( 0, 1000 );
         // rainEmitter.setYSpeed(300, 500);
         // rainEmitter.setXSpeed(-5, 5);
 
@@ -114,16 +114,16 @@
             fill: '#000' 
         });
 
-		// Keyboard input
+        // Keyboard input
         cursors = this.input.keyboard.createCursorKeys();
     }
 
     function update ()
     {
         // Rainy
-		if (weather == "Rainy") 
+        if (weather == "Rainy") 
         {
-			rainEmitter.start()
+            rainEmitter.start()
             if ( waterLevel < 200 ) {
                 waterLevel += waterFillRate
                 if (waterLevel > maxWaterLevel) 
@@ -133,7 +133,7 @@
                     flowerHealth -= 1
                 }
             }
-		} else 
+        } else 
         {
             // Sunny
             rainEmitter.stop()
@@ -162,17 +162,17 @@
         }
 
         if (cursors.left.isDown && weather != "Sunny")
-		{
-			weather = "Sunny"
-			text.setText(weather);
-			text.setPosition(16, 16, 1);
-		}
+        {
+            weather = "Sunny"
+            text.setText(weather);
+            text.setPosition(16, 16, 1);
+        }
         else if (cursors.right.isDown && weather != "Rainy")
-		{
-			weather = "Rainy"
-			text.setText(weather);
-			text.setPosition(600, 32, 1);
-		}
+        {
+            weather = "Rainy"
+            text.setText(weather);
+            text.setPosition(600, 32, 1);
+        }
 
         
         rect.height = waterLevel
@@ -180,7 +180,7 @@
         graphics.clear();
         graphics.fillRectShape(rect);
 
-	}
+    }
 
     function restartGame () 
     {
