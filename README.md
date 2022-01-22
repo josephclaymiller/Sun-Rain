@@ -11,4 +11,4 @@ Controls
 - Right Arrow = Sunny
 - Left Arrow = Rainy
 
-![Screenshot](https://github.com/josephclaymiller/Sun-Rain/blob/main/Sun-Rain.png)
+![Screenshot](https://github.com/josephclaymiller/Sun-Rain/blob/main/sun_rain_screenshot2.png)
