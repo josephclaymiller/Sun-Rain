@@ -175,7 +175,7 @@
         if (flowerHealth <= 0) {
             // plant is dead
             window.alert("Flower has died");
-            restartGame();
+			this.scene.restart();
         }
 
         if (cursors.left.isDown && weather != "Sunny")
@@ -198,14 +198,6 @@
         graphics.fillRectShape(rect);
 
     }
-
-    function restartGame () 
-    {
-        // TODO: Figure out how to restart game
-        waterLevel = waterStartLevel;
-        this.scene.restart(); // restart current scene
-    }
-
 </script>
 
 </body>
