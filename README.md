@@ -7,7 +7,7 @@ Controls
 - Left Arrow = Change weather to Sunny
 - Right Arrow = Change weather to Rainy
 
-![Screenshot](https://github.com/josephclaymiller/Sun-Rain/blob/main/sun_rain_screenshot3.png)
+![Screenshot](https://github.com/josephclaymiller/Sun-Rain/blob/main/screenshots/sun_rain_screenshot4.png)
 
 
 To play game offline:
