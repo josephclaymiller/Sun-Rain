@@ -46,9 +46,20 @@
     var waterStartLevel = 40;
     var minWaterLevel = 10;
     var maxWaterLevel = 100;
+    var thirst; 
+    var maxThirst = 100;
     var flower;
     var flowerHealth;
+    var growth = 0;
+    var growthNextStage = 100;
+    var maxGrowth;
     var maxFlowerHealth = 100;
+    var flowerOffset = -40;
+    var groundLevel = 400 - flowerOffset;
+    var lifeStage = 0;
+    var lifeStages = [];
+    var sunflower;
+    var seed;
 
     var graphics;
     var rect;
@@ -58,11 +69,16 @@
         this.load.image('background', 'assets/background.png');
         this.load.image('sky', 'assets/sky.png');
         this.load.image('ground', 'assets/platform.png');
-        this.load.image('flower', 'assets/flower.png');
+        this.load.image('flower', 'assets/sunflower.png');
         this.load.image('droplet', 'assets/droplet.png');
         this.load.image('cloud', 'assets/cloud.png');
         this.load.image('sun', 'assets/sun.png');
         this.load.image('sunRay', 'assets/sunRay.png');
+        this.load.image('seed', 'assets/seed.png');
+        this.load.image('seedling1', 'assets/seedling1.png');
+        this.load.image('seedling2', 'assets/seedling2.png');
+        this.load.image('seedling3', 'assets/seedling3.png');
+        this.load.image('seedling4', 'assets/seedling4.png');
 
         //this.load.spritesheet('button', 'assets/button_sprite_sheet.png', 193, 71);
     }
@@ -90,9 +106,23 @@
         this.add.image(400, 568, 'ground').setScale(2);
 
         // flower
-        flowerHealth = maxFlowerHealth;
-        flower = this.add.image(400, 400, 'flower');
+        // starts as seed and starts out thirsty
+        flowerHealth = maxFlowerHealth * 0.25;
+        thirst = maxThirst;
+        sunflower = this.add.image(400, groundLevel + flowerOffset, 'flower');
+        seed = this.add.image(400, groundLevel, 'seed');
+        seedling1 = this.add.image(400, groundLevel, 'seedling1');
+        seedling2 = this.add.image(400, groundLevel, 'seedling2');
+        seedling3 = this.add.image(400, groundLevel, 'seedling3');
+        seedling4 = this.add.image(400, groundLevel, 'seedling4');
+        lifeStages = [seed, seedling1, seedling2, seedling3, seedling4, sunflower];
 
+        maxGrowth = growthNextStage * lifeStages.length;
+        for (var i = lifeStages.length - 1; i >= 0; i--) {
+            lifeStages[i].visible = false
+        }
+        flower = lifeStages[0]
+        flower.visible = true
         // rain
         this.add.image(600, 100, 'cloud');
         var particles = this.add.particles('droplet');
@@ -133,12 +163,16 @@
 
     function update ()
     {
+        // plant health
+        console.log(`plant health: ${flowerHealth}/${maxFlowerHealth}`);
+        console.log(`plant thirst: ${thirst}/${maxThirst}`);
+        console.log(`plant growth: ${growth}/${growthNextStage}`);
         if (weather == "Rainy") {
             // Rainy
             sunEmitter.stop()
             sunEmitter.killAll()
             sunEmitter.forEachDead( (part) => {
-                part.resetPosition()
+                part.resetPosition();
             } );
             rainEmitter.start()
             if ( waterLevel < 200 ) {
@@ -146,27 +180,50 @@
                 if (waterLevel > maxWaterLevel) 
                 {
                     // plant is dying
-                    console.log(`plant is drowning ${flowerHealth}/${maxFlowerHealth}`);
-                    flowerHealth -= 1
+                    console.log(`plant is drowning`);
+                    flowerHealth -= 1;
+                }
+                if (thirst > 0) {
+                    // gain health in rain when thirsty
+                    thirst -= 1;
+                    if (flowerHealth < 100) {
+                        flowerHealth += 1;
+                    }
                 }
             }
         } else {
             // Sunny
-            rainEmitter.stop()
-            sunEmitter.start()
+            rainEmitter.stop();
+            sunEmitter.start();
             sun.rotation += 0.005;
 
-            if (waterLevel > 0) 
-            {
-                waterLevel -= waterFillRate
-                if (waterLevel < minWaterLevel) 
-                {
+            if (waterLevel > 0) {
+                waterLevel -= waterFillRate;
+                if (waterLevel < minWaterLevel) {
                     // plant is dying
-                    console.log(`plant is thirsty ${flowerHealth}/${maxFlowerHealth}`);
-                    flowerHealth -= 1
-                } else if (flowerHealth < maxFlowerHealth) {
-                    // plant gains health in sun if not thirsty
-                    flowerHealth += 1
+                    console.log(`plant is thirsty`);
+                    thirst += 1;
+                    flowerHealth -= 1;
+                } else {
+                    // plant grows and gains health in sun if not thirsty
+                    if (thirst <= 0) {
+                        if (growth < maxGrowth) {
+                            growth += 1;
+                        }
+                        if (flowerHealth < maxFlowerHealth) {
+                            flowerHealth += 1; 
+                        }
+                        if (growth >= growthNextStage) {
+                            growth = 0;
+                            lifeStage += 1;
+                            if (lifeStage < lifeStages.length) {
+                                flower.visible = false;
+                                flower = lifeStages[lifeStage];
+                                flower.visible = true;
+                            }
+                        }
+                    }
+   
                 }
             }
         }
@@ -180,20 +237,20 @@
 
         if (cursors.left.isDown && weather != "Sunny")
         {
-            weather = "Sunny"
+            weather = "Sunny";
             text.setText(weather);
             text.setPosition(16, 16, 1);
         }
         else if (cursors.right.isDown && weather != "Rainy")
         {
-            weather = "Rainy"
+            weather = "Rainy";
             text.setText(weather);
             text.setPosition(600, 32, 1);
         }
 
         
-        rect.height = waterLevel
-        rect.y = 600 - rect.height
+        rect.height = waterLevel;
+        rect.y = 600 - rect.height;
         graphics.clear();
         graphics.fillRectShape(rect);
 
