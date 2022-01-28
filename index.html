@@ -32,6 +32,8 @@
     };
 
     var game = new Phaser.Game(config);
+    var graphics;
+    var rect;
 
     var weather='Sunny';
     var rainEmitter;
@@ -50,19 +52,16 @@
     var maxThirst = 100;
     var flower;
     var flowerHealth;
-    var growth = 0;
+    var growth;
     var growthNextStage = 100;
     var maxGrowth;
     var maxFlowerHealth = 100;
     var flowerOffset = -40;
     var groundLevel = 400 - flowerOffset;
-    var lifeStage = 0;
+    var lifeStage;
     var lifeStages = [];
     var sunflower;
     var seed;
-
-    var graphics;
-    var rect;
 
     function preload ()
     {
@@ -109,6 +108,8 @@
         // starts as seed and starts out thirsty
         flowerHealth = maxFlowerHealth * 0.25;
         thirst = maxThirst;
+        growth = 0;
+        lifeStage = 0;
         sunflower = this.add.image(400, groundLevel + flowerOffset, 'flower');
         seed = this.add.image(400, groundLevel, 'seed');
         seedling1 = this.add.image(400, groundLevel, 'seedling1');
